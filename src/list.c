@@ -1,47 +1,117 @@
-#include "list.h"
+#include "list.h" 
 
-static inline void _list_add(struct _list *list, struct _node *target_node, struct _node *node)
-{   
-    struct _node *ptr_node = NULL;
-    struct _node *tmp = NULL;
+#define ISNULL(NODE_NAME) ((NODE_NAME)?0:1)
+
+typedef enum {
+    NODE_IS_EXIST,
+    NODE_NOT_ESIXT,
+} NODE_EXIST;
+
+typedef enum {
+    LIST_IS_CYCLE,
+    LIST_NOT_CYCLE,
+} LIST_CYCLE;
+
+/**
+  * @brief  Whether node is cycle?
+  * @param  list structure of _list
+  * @retval Cycle or not cycle
+  */
+int folyd_cycle_detection(struct _list *list)
+{
+    struct _node *ptr_rabbit = list->head;
+    struct _node *ptr_tortoise = list->head->next;
+
+    while (ptr_rabbit!=NULL && ptr_tortoise!=NULL) {
+        if (ptr_rabbit == ptr_tortoise) {
+            return LIST_IS_CYCLE;
+        }
+        ptr_rabbit = ptr_rabbit->next;
+        ptr_tortoise = ptr_tortoise->next->next;
+    }
+
+    return LIST_NOT_CYCLE;
+}
+
+
+
+/**
+  * @brief  Whether node in list?
+  * @param  list structure of _list
+  * @retval Exist or not exist.
+  */
+static inline NODE_EXIST node_exist(struct _list *head, struct _node *node)
+{
+    struct _node *ptr_node;
+    LIST_FOR_EACH(ptr_node, head) {
+        if (ptr_node == node) {
+            return NODE_IS_EXIST;
+        }
+    }
+
+    return NODE_NOT_ESIXT;
+}
+
+/**
+  * @brief  Push new node into tail of list.
+  * @param  list structure of _list
+  * @param  node structure of node
+  */
+static inline void _push_back(struct _list *list, struct _node *node)
+{
+    struct _node *ptr_node;
+
+    if (list->head == NULL) {
+        list->head = node;
+        node->next = NULL;
+        return;
+    }
 
     LIST_FOR_EACH(ptr_node, list) {
-        if (ptr_node == target_node) {
-            tmp = ptr_node->next;
+        if (ptr_node->next == NULL) {
             ptr_node->next = node;
-            node->next = tmp;
+            node->next = NULL;
             break;
         }
     }
 }
 
-static inline struct _node *_list_tail_node(struct _list *list)
+/**
+  * @brief  Pop node from tail of list.
+  * @param  list structure of _list
+  */
+static inline void _pop_back(struct _list *list)
 {
-    struct _node *ptr_node = NULL;
+    struct _node *ptr_node;
+
     LIST_FOR_EACH(ptr_node, list) {
-        if (ptr_node->next == NULL) {
-            return ptr_node;
+        if (ptr_node->next->next == NULL) {
+            ptr_node->next = NULL;
+            break;
         }
     }
-    
-    return NULL;
+}
+
+/**
+  * @brief  Pop node from head of list.
+  * @param  list structure of _list
+  */
+static inline void _pop_front(struct _list *list)
+{
+    list->head = list->head->next;
 }
 
 void list_push_back(struct _list *list, struct _node *node)
 {
-    _list_add(list, _list_tail_node(list), node);
+    _push_back(list, node);
 }
 
-void _list_remove(struct _list *list, struct _node *target_node, struct _node *node)
+void list_pop_back(struct _list *list)
 {
-    struct _node *ptr_node = NULL;
-    struct _node *tmp = NULL;
+    _pop_back(list);
+}
 
-    LIST_FOR_EACH(ptr_node, list) {
-        if (ptr_node->next == target_node) {
-            tmp = ptr_node->next->next;
-            ptr_node->next = tmp;
-            break;
-        }
-    }
+void list_pop_front(struct _list *list)
+{
+    _pop_front(list);
 }
