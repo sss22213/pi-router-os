@@ -3,8 +3,7 @@
 struct _node *_pull(struct _queue *queue)
 {
     struct _node *ptr_q_head = queue->ptr_queue_head->head;
-    list_pop_front(queue->ptr_queue_head);
-    return ptr_q_head;
+    return list_pop_front(queue->ptr_queue_head);
 }
 
 void _push(struct _queue *queue, struct _node *node)

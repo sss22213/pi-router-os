@@ -1,9 +1,9 @@
 CC := gcc
-CFLAGS := -g -Wall -std=gnu11
+CFLAGS := -g -std=gnu11
 
 all: clean main
 
-main: main.o pi_uci.o list.o queue.o wireless.o
+main: main.o list.o queue.o tree.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 main.o: main.c
@@ -15,7 +15,10 @@ pi_uci.o: pi_uci.c
 list.o: list.c
 	$(CC) $(CFLAGS) -c $^ -o $@
 
-queue.c:  queue.o
+queue.o: queue.c
+	$(CC) $(CFLAGS) -c $^ -o $@
+
+tree.c: tree.o
 	$(CC) $(CFLAGS) -c $^ -o $@
 
 wireless.o: wireless.c

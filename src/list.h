@@ -35,7 +35,7 @@ struct _list {
 
 void list_push_back(struct _list*, struct _node*);
 void list_pop_back(struct _list*);
-void list_pop_front(struct _list*);
+struct _node *list_pop_front(struct _list*);
 int folyd_cycle_detection(struct _list*);
 
 #endif

@@ -96,9 +96,11 @@ static inline void _pop_back(struct _list *list)
   * @brief  Pop node from head of list.
   * @param  list structure of _list
   */
-static inline void _pop_front(struct _list *list)
+struct _node *_pop_front(struct _list *list)
 {
+    struct _node *ptr_node = list->head;
     list->head = list->head->next;
+    return ptr_node;
 }
 
 void list_push_back(struct _list *list, struct _node *node)
@@ -111,7 +113,7 @@ void list_pop_back(struct _list *list)
     _pop_back(list);
 }
 
-void list_pop_front(struct _list *list)
+struct _node *list_pop_front(struct _list *list)
 {
-    _pop_front(list);
+    return _pop_front(list);
 }

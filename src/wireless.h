@@ -13,12 +13,27 @@
 
 #define INTERFACE_NAME_LENGTH 10
 #define IFACE_NUMBER 100
-#define IFACE_INFO  1024
+#define IFACE_INFO  200
+#define IFACE_FREQ_INFO 5
+#define IFACE_CHANNEL_INFO 3
 
-typedef enum {
-    wireless_active,
-    wireless_stop,
-} WIRELESS_ACTIVE;
+
+struct _channel_freq {
+    /* GHZ */
+    float freq[IFACE_FREQ_INFO];
+    char channel[IFACE_CHANNEL_INFO];
+};
+
+struct _wireless_iface_iwlist_node {
+    struct _queue support_freq_channel;
+    struct _channel_freq current_freq_channel;
+    /* MB/s */
+    float bitrate;
+    /* MB/s */
+    float rate;
+    /* dbm */
+    int txpower;
+};
 
 struct _wireless_iface_node {
     int iface;
@@ -27,12 +42,11 @@ struct _wireless_iface_node {
 
 struct _wireless_iface_active_node {
     int iface;
-    char mac_addr[17];
     char ip_addr[15];
     char broadcast[15];
     char hwaddr[17];
     int mask;
-    WIRELESS_ACTIVE wirless_action;
+    struct _wireless_iface_iwlist_node wireless_iface_iwlist_node;
     struct _node iface_node;
 };
 
