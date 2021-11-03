@@ -20,17 +20,16 @@
 
 struct _channel_freq {
     /* GHZ */
-    float freq[IFACE_FREQ_INFO];
-    char channel[IFACE_CHANNEL_INFO];
+    float freq;
+    char channel;
+    struct _node iface_node;
 };
 
 struct _wireless_iface_iwlist_node {
-    struct _queue support_freq_channel;
-    struct _channel_freq current_freq_channel;
+    struct _channel_freq current_channel_freq;
+    struct _queue *ptr_support_channel_freq;
     /* MB/s */
     float bitrate;
-    /* MB/s */
-    float rate;
     /* dbm */
     int txpower;
 };
@@ -56,5 +55,6 @@ struct _wireless_list {
 
 void find_all_wireless_iface(struct _queue*);
 void find_all_wireless_action_iface(struct _queue*);
+struct _wireless_iface_iwlist_node *_find_support_freq_channel(int);
 
 #endif

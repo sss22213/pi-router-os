@@ -2,7 +2,7 @@
 
 struct _node *_pull(struct _queue *queue)
 {
-    struct _node *ptr_q_head = queue->ptr_queue_head->head;
+    // struct _node *ptr_q_head = queue->ptr_queue_head->head;
     return list_pop_front(queue->ptr_queue_head);
 }
 

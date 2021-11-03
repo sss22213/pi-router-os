@@ -1,5 +1,42 @@
 #include "tree.h"
 
+void bfs(struct _rb_root_node *rb_root_node, struct _queue *ptr_result)
+{
+    INIT_QUEUE(queue1, list1);
+    int queue_size = 0;
+    struct _rb_leaf_node *rb_tmp_node = rb_root_node->ptr_root_node;
+
+    struct _leaf_and_lift_node *new_leaf_and_lift_node = \
+                (struct _leaf_and_lift_node*)calloc(1, sizeof(struct _leaf_and_lift_node));
+                
+    new_leaf_and_lift_node->rb_leaf_node = rb_tmp_node;
+
+    queue_push(&queue1, &(new_leaf_and_lift_node->list_node));
+
+    while (queue1.size != 0) {
+        queue_size = queue1.size;
+        while (queue_size-- != 0) {
+            struct _node *rb_ptr_node = queue_pull(&queue1);
+
+            queue_push(ptr_result, rb_ptr_node);
+
+            if (CONTAINER_OF(rb_ptr_node, struct _leaf_and_lift_node, list_node)->rb_leaf_node->left != NULL) {
+                new_leaf_and_lift_node = \
+                    (struct _leaf_and_lift_node*)calloc(1, sizeof(struct _leaf_and_lift_node));
+                new_leaf_and_lift_node->rb_leaf_node = CONTAINER_OF(rb_ptr_node, struct _leaf_and_lift_node, list_node)->rb_leaf_node->left;
+                queue_push(&queue1, &(new_leaf_and_lift_node->list_node));
+            }
+
+            if (CONTAINER_OF(rb_ptr_node, struct _leaf_and_lift_node, list_node)->rb_leaf_node->right != NULL) {
+                new_leaf_and_lift_node = \
+                    (struct _leaf_and_lift_node*)calloc(1, sizeof(struct _leaf_and_lift_node));
+                new_leaf_and_lift_node->rb_leaf_node = CONTAINER_OF(rb_ptr_node, struct _leaf_and_lift_node, list_node)->rb_leaf_node->right;
+                queue_push(&queue1, &(new_leaf_and_lift_node->list_node));
+            }
+        }
+    }
+}
+
 void tree_insert_leaf(struct _rb_root_node *rb_root_node, bool (*cmp)(struct _rb_leaf_node*, struct _rb_leaf_node*), \
                         struct _rb_leaf_node *rb_leaf_node)
 {
@@ -19,17 +56,15 @@ void tree_insert_leaf(struct _rb_root_node *rb_root_node, bool (*cmp)(struct _rb
 void tree_search_leaf(struct _rb_root_node *rb_root_node, bool (*cmp)(struct _rb_leaf_node*, struct _rb_leaf_node*), \
                             struct _rb_leaf_node* target_rb_root_node, struct _rb_leaf_node *ptr_result)
 {
-    struct _rb_leaf_node *ptr_cur_node = rb_root_node->ptr_root_node;
+    ptr_result = rb_root_node->ptr_root_node;
 
-    while (ptr_cur_node != target_rb_root_node && ptr_cur_node != NULL) {
-        if (cmp(ptr_cur_node, target_rb_root_node) > 0) {
-            ptr_cur_node = ptr_cur_node->left;
+    while (ptr_result != target_rb_root_node && ptr_result != NULL) {
+        if (cmp(ptr_result, target_rb_root_node) > 0) {
+            ptr_result = ptr_result->left;
         } else {
-            ptr_cur_node = ptr_cur_node->right;
+            ptr_result = ptr_result->right;
         }
     }
-
-    ptr_result = ptr_cur_node;
 }
 
 // Hibbard deletion algorithm: ref http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/BST-delete2.html

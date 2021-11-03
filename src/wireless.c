@@ -8,6 +8,11 @@
 #define IFACE_LOOKUP_ACTIVE_IFACE_CMD "ifconfig | grep wlan* | awk '{print $1}' | sed 's/wlan//g'"
 #define IFACE_LOOKUP_SUPPORT_FREQ  "iwlist wlan%d channel | awk '{print $4}' | grep '[[:digit:]]'"
 #define IFACE_LOOKUP_SUPPORT_CHANNEL  "iwlist wlan%d channel | awk '{print $2}' | grep '[[:digit:]]' | sed '1d;$d'"
+#define IFACE_LOOKUP_TXPOWER_DBM "iwlist wlan%d txpower | grep mW | sed -E 's/[=]|[()]|mW/ /g' | awk '{print $3}'"
+#define IFACE_LOOKUP_TXPOWER_MW "iwlist wlan%d txpower | grep mW | sed -E 's/[=]|[()]|mW/ /g' | awk '{print $5}'"
+#define IFACE_LOOKUP_BITRATE "iwlist wlan%d bitrate | grep Mb/s | sed 's/[:]/ /g' | awk '{print $4}'"
+#define IFACE_LOOKUP_CURRENT_FREQUENCY "iwlist wlan%d channel | grep 'Current Frequency' | sed -E 's/[:]|[()]/ /g' | awk '{print $3}'"
+#define IFACE_LOOKUP_CURRENT_CHANNEL "iwlist wlan4 channel | grep 'Current Frequency' | sed -E 's/[:]|[()]/ /g' | awk '{print $6}'"
 
 static inline int string_to_int(char *str)
 {
@@ -22,7 +27,37 @@ static inline int string_to_int(char *str)
     return result;
 }
 
-static inline struct _wireless_iface_iwlist_node *_find_support_freq_channel(int iface_number)
+static inline float string_to_float(char *str)
+{
+    float result = 0;
+
+    float decimal_idx = 0.1;
+
+    int decimal_flag = 0;
+
+    char *ptr_str = str;
+    for (int str_idx = 0; *ptr_str!='\n' && *ptr_str!='\0' && str_idx < INTERFACE_NAME_LENGTH; str_idx++) {
+        if (*ptr_str == '.') {
+            decimal_flag = 1;
+            ptr_str++;
+            continue;
+        }
+
+        if (decimal_flag) {
+            result = result + (float)(*ptr_str - '0') * decimal_idx;
+            decimal_idx *= 0.1;
+        } else {
+            result = result * 10 + *ptr_str - '0';
+        }
+
+        ptr_str++;
+    }
+
+    return result;
+}
+
+
+struct _wireless_iface_iwlist_node *_find_support_freq_channel(int iface_number)
 {
     FILE *ptr_cmd_active_wlan_lookup = NULL;
 
@@ -32,14 +67,82 @@ static inline struct _wireless_iface_iwlist_node *_find_support_freq_channel(int
     char iface[IFACE_INFO] = {0};
     memset(iface, 0, sizeof(iface));
 
-    struct _wireless_iface_active_node *wireless_iface_active_node = \
-        (struct _wireless_iface_active_node*)calloc(1, sizeof(struct _wireless_iface_active_node));
+    struct _wireless_iface_iwlist_node *wireless_iface_iwlist_node = \
+        (struct _wireless_iface_iwlist_node*)calloc(1, sizeof(struct _wireless_iface_iwlist_node));
 
-    
+    /* Frequency */
+    sprintf(look_cmd, IFACE_LOOKUP_SUPPORT_FREQ, iface_number);
 
-    
+    ptr_cmd_active_wlan_lookup = popen(look_cmd, "r");
 
+    while (fgets(iface, IFACE_INFO, ptr_cmd_active_wlan_lookup)) {
+        printf("%e\n", string_to_float(iface));
+    }
 
+    /* Channel */
+    memset(look_cmd, 0, sizeof(look_cmd) / sizeof(look_cmd[0]));
+    sprintf(look_cmd, IFACE_LOOKUP_SUPPORT_CHANNEL, iface_number);
+
+    ptr_cmd_active_wlan_lookup = popen(look_cmd, "r");
+
+    while (fgets(iface, IFACE_INFO, ptr_cmd_active_wlan_lookup)) {
+        printf("%d\n", string_to_int(iface));
+    }
+
+    /* Txpower(dbm) */
+    memset(look_cmd, 0, sizeof(look_cmd) / sizeof(look_cmd[0]));
+    sprintf(look_cmd, IFACE_LOOKUP_TXPOWER_DBM, iface_number);
+
+    ptr_cmd_active_wlan_lookup = popen(look_cmd, "r");
+
+    fgets(iface, IFACE_INFO, ptr_cmd_active_wlan_lookup);
+
+    wireless_iface_iwlist_node->txpower = string_to_int(iface);
+
+    // printf("%d\n", string_to_int(iface));
+
+    /* Txpower(mw)
+    memset(look_cmd, 0, sizeof(look_cmd) / sizeof(look_cmd[0]));
+    sprintf(look_cmd, IFACE_LOOKUP_TXPOWER_MW, iface_number);
+
+    ptr_cmd_active_wlan_lookup = popen(look_cmd, "r");
+
+    fgets(iface, IFACE_INFO, ptr_cmd_active_wlan_lookup);
+
+    printf("%d\n", string_to_int(iface));
+    */
+
+    /* Bitrate */
+    memset(look_cmd, 0, sizeof(look_cmd) / sizeof(look_cmd[0]));
+    sprintf(look_cmd, IFACE_LOOKUP_BITRATE, iface_number);
+
+    ptr_cmd_active_wlan_lookup = popen(look_cmd, "r");
+
+    fgets(iface, IFACE_INFO, ptr_cmd_active_wlan_lookup);
+
+    wireless_iface_iwlist_node->bitrate = string_to_float(iface);
+
+    /* Current frequency */
+    memset(look_cmd, 0, sizeof(look_cmd) / sizeof(look_cmd[0]));
+    sprintf(look_cmd, IFACE_LOOKUP_CURRENT_FREQUENCY, iface_number);
+
+    ptr_cmd_active_wlan_lookup = popen(look_cmd, "r");
+
+    fgets(iface, IFACE_INFO, ptr_cmd_active_wlan_lookup);
+
+    wireless_iface_iwlist_node->current_channel_freq.freq = string_to_float(iface);
+
+    /* Current channel */
+    memset(look_cmd, 0, sizeof(look_cmd) / sizeof(look_cmd[0]));
+    sprintf(look_cmd, IFACE_LOOKUP_CURRENT_CHANNEL, iface_number);
+
+    ptr_cmd_active_wlan_lookup = popen(look_cmd, "r");
+
+    fgets(iface, IFACE_INFO, ptr_cmd_active_wlan_lookup);
+
+    wireless_iface_iwlist_node->current_channel_freq.channel = string_to_int(iface);
+
+    return wireless_iface_iwlist_node;
 }
 
 static inline struct _wireless_iface_active_node *find_iface_info(int iface_number)
