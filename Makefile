@@ -6,8 +6,9 @@ PACKAGEDIR:=package
 GIT := git
 MAKE := make
 
-all: preprocess
-preprocess:
+all: pi_router/beforebuild pi_router/build
+
+pi_router/beforebuild:
 ifeq (${OS},Windows_NT)
 	@echo Host can not support windows.
 else
@@ -15,5 +16,7 @@ else
 	sudo ./$(SCRIPTS_DIR)/install_env.sh
 endif
 	$(call pi_router/pull/openwrt)
-	${call pi_router/package/preprocess}
-	 
+
+pi_router/build:
+# Find all of package
+	$(foreach package_makefile,$(wildcard $(PACKAGEDIR)/*),$(MAKE) -C $(CURDIR)/$(package_makefile))
