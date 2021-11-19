@@ -1,7 +1,7 @@
 include $(TOPDIR)/$(INCLUDEDIR)/package.mk
 
 # Package name
-PKG_NAME:=banner
+PKG_NAME:=pi_config
 
 # Package verison
 PKG_VERSION:=1.0
@@ -10,7 +10,7 @@ PKG_VERSION:=1.0
 PKG_MINIMUM_VERSION := 21
 
 define pi_router/$(PKG_NAME)/beforebuild
-	cp -v $(TOPDIR)/$(PACKAGEDIR)/$(PKG_NAME)/files/banner $(TOPDIR)/$(OPENWRTDOR)/package/base-files/files/etc
+	cp -v $(TOPDIR)/$(PACKAGEDIR)/$(PKG_NAME)/files/config $(TOPDIR)/$(OPENWRTDOR)/.config
 endef
 
 define pi_router/$(PKG_NAME)/build
