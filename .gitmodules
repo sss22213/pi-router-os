@@ -1,4 +1,4 @@
 [submodule "openwrt"]
 	path = openwrt
 	url = git@github.com:openwrt/openwrt.git
-	branch = v21.02.1
+	branch = openwrt-21.02
