@@ -1,3 +1,4 @@
 [submodule "openwrt"]
 	path = openwrt
-	url = https://github.com/sss22213/pi-router-os-openwrt
+	url = git@github.com:openwrt/openwrt.git
+	branch = v21.02.1

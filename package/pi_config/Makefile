@@ -14,7 +14,7 @@ define pi_router/$(PKG_NAME)/beforebuild
 endef
 
 define pi_router/$(PKG_NAME)/build
-	
+	cd $(OPENWRTDOR);./scripts/diffconfig.sh;cp configdiff .config;make defconfig;make oldconfig;
 endef
 
 define pi_router/$(PKG_NAME)/afterbuild

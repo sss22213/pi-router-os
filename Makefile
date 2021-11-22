@@ -18,11 +18,10 @@ ifeq (${OS},Windows_NT)
 else
 # Pull lastest openwrt PR
 	$(call pi_router/pull/openwrt)
-# Cleanning openwrt package 
-	$(MAKE) -C $(OPENWRTDOR) distclean;
 # Install environment for building openwrt
 	sudo chmod +x $(SCRIPTS_DIR)/install_env.sh
 	sudo ./$(SCRIPTS_DIR)/install_env.sh
+	$(MAKE) -C $(OPENWRTDOR) clean;
 # Update openwrt package
 	cd $(OPENWRTDOR);./scripts/feeds update -a;./scripts/feeds install -a;
 endif
@@ -39,7 +38,7 @@ pi_router/build:
 	mkdir -p build
 
 # Build openwrt
-	$(MAKE) -C $(OPENWRTDOR) -j4 V=s;
+	$(MAKE) -C $(OPENWRTDOR) -j6 V=s;
 
 # Copy the image of openwrt building to build folder.
 	cp -v $(OPENWRTDOR)/bin/targets/bcm27xx/bcm2711/openwrt-bcm27xx-bcm2711-rpi-4-squashfs-factory.img.gz $(BUILDFOLDER)

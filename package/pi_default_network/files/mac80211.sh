@@ -103,33 +103,44 @@ detect_mac80211() {
 			dev_id="set wireless.radio${devidx}.macaddr=$(cat /sys/class/ieee80211/${dev}/macaddress)"
 		fi
 
-		raspberry_pi_radio=```uci show wireless | grep platform/soc/fe300000.mmcnr | awk -F"." '{print $2}'```
-
 		# For raspberry pi
-		uci -q batch <<-EOF
-			set wireless.radio${devidx}=wifi-device
-			set wireless.radio${devidx}.type=mac80211
-			set wireless.radio${devidx}.channel=${channel}
-			set wireless.radio${devidx}.hwmode=11${mode_band}
-			${dev_id}
-			${ht_capab}
-			set wireless.radio${devidx}.disabled=1
-			set wireless.default_radio${devidx}=wifi-iface
-			set wireless.default_radio${devidx}.device=radio${devidx}
-			set wireless.default_radio${devidx}.network=lan
-			set wireless.default_radio${devidx}.mode=ap
-			set wireless.default_radio${devidx}.ssid=OpenWrt
-			set wireless.default_radio${devidx}.encryption=none
-
-			set wireless.${raspberry_pi_radio}=wifi-device
-			set wireless.${raspberry_pi_radio}.type=mac80211
-			set wireless.${raspberry_pi_radio}.legacy_rates='0'
-			set wireless.${raspberry_pi_radio}.channel='7'
-			set wireless.${raspberry_pi_radio}.hwmode='11g'
-			set wireless.${raspberry_pi_radio}.htmode='HT20'
-			set wireless.${raspberry_pi_radio}.country='US'
-			set wireless.${raspberry_pi_radio}.short_gi_40='0'
-EOF
+		if [ "$path" == "platform/soc/fe300000.mmcnr/mmc_host/mmc1/mmc1:0001/mmc1:0001:1" ]; then
+		# For raspberry pi
+			uci -q batch <<-EOF
+				set wireless.radio${devidx}=wifi-device
+				set wireless.radio${devidx}.type=mac80211
+				set wireless.radio${devidx}.legacy_rates='0'
+				set wireless.radio${devidx}.channel='7'
+				set wireless.radio${devidx}.hwmode='11g'
+				set wireless.radio${devidx}.htmode='HT20'
+				set wireless.radio${devidx}.country='US'
+				set wireless.radio${devidx}.short_gi_40='0'
+				set wireless.radio${devidx}.disabled=0
+				${dev_id}
+				set wireless.default_radio${devidx}=wifi-iface
+				set wireless.default_radio${devidx}.device=radio${devidx}
+				set wireless.default_radio${devidx}.network=lan
+				set wireless.default_radio${devidx}.mode=ap
+				set wireless.default_radio${devidx}.ssid=OpenWrt
+				set wireless.default_radio${devidx}.encryption=none
+	EOF
+		else
+				uci -q batch <<-EOF
+				set wireless.radio${devidx}=wifi-device
+				set wireless.radio${devidx}.type=mac80211
+				set wireless.radio${devidx}.channel=${channel}
+				set wireless.radio${devidx}.hwmode=11${mode_band}
+				${dev_id}
+				${ht_capab}
+				set wireless.radio${devidx}.disabled=1
+				set wireless.default_radio${devidx}=wifi-iface
+				set wireless.default_radio${devidx}.device=radio${devidx}
+				set wireless.default_radio${devidx}.network=lan
+				set wireless.default_radio${devidx}.mode=ap
+				set wireless.default_radio${devidx}.ssid=OpenWrt
+				set wireless.default_radio${devidx}.encryption=none
+	EOF
+		fi
 		uci -q commit wireless
 
 		devidx=$(($devidx + 1))
