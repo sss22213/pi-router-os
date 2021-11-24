@@ -21,6 +21,7 @@ else
 # Install environment for building openwrt
 	sudo chmod +x $(SCRIPTS_DIR)/install_env.sh
 	sudo ./$(SCRIPTS_DIR)/install_env.sh
+	$(MAKE) -C $(OPENWRTDOR) defconfig;
 	$(MAKE) -C $(OPENWRTDOR) clean;
 # Update openwrt package
 	cd $(OPENWRTDOR);./scripts/feeds update -a;./scripts/feeds install -a;
