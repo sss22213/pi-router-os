@@ -121,7 +121,7 @@ detect_mac80211() {
 				set wireless.default_radio${devidx}.device=radio${devidx}
 				set wireless.default_radio${devidx}.network=lan
 				set wireless.default_radio${devidx}.mode=ap
-				set wireless.default_radio${devidx}.ssid=OpenWrt
+				set wireless.default_radio${devidx}.ssid=pi-router-os
 				set wireless.default_radio${devidx}.encryption=none
 	EOF
 		else
@@ -137,7 +137,7 @@ detect_mac80211() {
 				set wireless.default_radio${devidx}.device=radio${devidx}
 				set wireless.default_radio${devidx}.network=lan
 				set wireless.default_radio${devidx}.mode=ap
-				set wireless.default_radio${devidx}.ssid=OpenWrt
+				set wireless.default_radio${devidx}.ssid=pi-router-os
 				set wireless.default_radio${devidx}.encryption=none
 	EOF
 		fi

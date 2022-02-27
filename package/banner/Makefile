@@ -7,7 +7,7 @@ PKG_NAME:=banner
 PKG_VERSION:=1.0
 
 # Minimunm support for openwrt
-PKG_MINIMUM_VERSION := 21
+PKG_MINIMUM_VERSION:=21
 
 define pi_router/$(PKG_NAME)/beforebuild
 	cp -v $(TOPDIR)/$(PACKAGEDIR)/$(PKG_NAME)/files/banner $(TOPDIR)/$(OPENWRTDOR)/package/base-files/files/etc
@@ -21,5 +21,4 @@ define pi_router/$(PKG_NAME)/afterbuild
 	
 endef
 
-$(PKG_NAME):
-	$(call pi_router/package/build, $(PKG_NAME))
+$(eval $(call pi_router/package/build, $(PKG_NAME)))

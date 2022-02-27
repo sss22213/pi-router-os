@@ -21,5 +21,4 @@ define pi_router/$(PKG_NAME)/afterbuild
 	
 endef
 
-$(PKG_NAME):
-	$(call pi_router/package/build, $(PKG_NAME))
+$(eval $(call pi_router/package/build, $(PKG_NAME)))

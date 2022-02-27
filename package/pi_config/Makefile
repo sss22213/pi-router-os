@@ -10,8 +10,10 @@ PKG_VERSION:=1.0
 PKG_MINIMUM_VERSION := 21
 
 define pi_router/$(PKG_NAME)/beforebuild
-	cp -v $(TOPDIR)/$(PACKAGEDIR)/$(PKG_NAME)/files/config $(TOPDIR)/$(OPENWRTDOR)/.config
+	@echo 1
 endef
+
+#cp -v $(TOPDIR)/$(PACKAGEDIR)/$(PKG_NAME)/files/config $(TOPDIR)/$(OPENWRTDOR)/.config
 
 define pi_router/$(PKG_NAME)/build
 
@@ -28,5 +30,5 @@ define pi_router/$(PKG_NAME)/afterbuild
 	
 endef
 
-$(PKG_NAME):
-	$(call pi_router/package/build, $(PKG_NAME))
+
+$(eval $(call pi_router/package/build, $(PKG_NAME)))
