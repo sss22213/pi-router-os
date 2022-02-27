@@ -10,7 +10,7 @@ MAKE := make
 include include/openwrt.mk
 include include/package.mk
 
-all: pi_router/build
+all: pi_router/beforebuild pi_router/build
 
 pi_router/beforebuild:
 ifeq (${OS},Windows_NT)
