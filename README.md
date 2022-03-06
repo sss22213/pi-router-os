@@ -11,3 +11,5 @@ make
 ```bash
 make pi_router/burn TARGET_DISK=<your sdcard path>
 ```
+
+![alt text](https://i.imgur.com/Ucl400u.png)
