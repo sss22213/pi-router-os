@@ -35,6 +35,15 @@ pi_router/build:
 				PACKAGEDIR=$(PACKAGEDIR) \
 				OPENWRTDOR=$(OPENWRTDOR)
 
+# Create build folder
+	mkdir -p build
+
+# Build openwrt
+	$(MAKE) -C $(OPENWRTDOR) -j6 V=s;
+
+# Copy the image of openwrt building to build folder.
+	cp -v $(OPENWRTDOR)/bin/targets/bcm27xx/bcm2711/openwrt-bcm27xx-bcm2711-rpi-4-squashfs-factory.img.gz $(BUILDFOLDER)
+
 pi_router/burn:
 	rm -rfv $(BUILDFOLDER)/openwrt-bcm27xx-bcm2711-rpi-4-squashfs-factory.img
 	gunzip -dk $(BUILDFOLDER)/openwrt-bcm27xx-bcm2711-rpi-4-squashfs-factory.img.gz

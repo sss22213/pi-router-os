@@ -2,3 +2,6 @@
 	path = openwrt
 	url = git@github.com:openwrt/openwrt.git
 	branch = openwrt-21.02
+[submodule "package/pi_web_ui/files/pi-router-os-web-ui"]
+	path = package/pi_web_ui/files/pi-router-os-web-ui
+	url = https://github.com/sss22213/pi-router-os-web-ui

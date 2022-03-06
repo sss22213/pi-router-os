@@ -1,0 +1,7 @@
+src-git packages https://git.openwrt.org/feed/packages.git;openwrt-21.02
+src-git luci https://git.openwrt.org/project/luci.git;openwrt-21.02
+src-git routing https://git.openwrt.org/feed/routing.git;openwrt-21.02
+src-git telephony https://git.openwrt.org/feed/telephony.git;openwrt-21.02
+#src-link custom /usr/src/openwrt/custom-feed
+#src-git pirouterospackage https://github.com/sss22213/pi-router-os-feed.git
+src-link pirouterpackage /home/sss22213/Desktop/pi-router-os-feed
