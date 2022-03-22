@@ -3,7 +3,7 @@ FIND := find
 FINDPACKAGEDIR := $(shell $(FIND) $(CURDIR) -mindepth 1 -maxdepth 1 -type d -and \! -name "package")
 
 pi_router/package/build:
-	$(foreach pkg,$(FINDPACKAGEDIR),$(MAKE) -f $(pkg)/Makefile;)
+	$(foreach pkg,$(FINDPACKAGEDIR),@echo $(pkg);$(MAKE) -f $(pkg)/Makefile;)
 
 pi_router/package/clean:
 	@echo clean

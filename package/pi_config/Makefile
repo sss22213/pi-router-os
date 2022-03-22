@@ -13,17 +13,18 @@ define pi_router/$(PKG_NAME)/beforebuild
 	@echo 1
 endef
 
-#cp -v $(TOPDIR)/$(PACKAGEDIR)/$(PKG_NAME)/files/config $(TOPDIR)/$(OPENWRTDOR)/.config
+
+#$(MAKE) -C $(TOPDIR)/$(OPENWRTDOR) defconfig;
+#$(MAKE) -C $(TOPDIR)/$(OPENWRTDOR) oldconfig;
+#cd $(TOPDIR)/$(OPENWRTDOR);./scripts/diffconfig.sh > configdiff;
+#cp $(TOPDIR)/$(OPENWRTDOR)/configdiff $(TOPDIR)/$(OPENWRTDOR)/.config;
 
 define pi_router/$(PKG_NAME)/build
-
+	cp -v $(TOPDIR)/$(PACKAGEDIR)/$(PKG_NAME)/files/config $(TOPDIR)/$(OPENWRTDOR)/.config
 endef
 
 define pi_router/$(PKG_NAME)/testbuild
-	cd $(TOPDIR)/$(OPENWRTDOR);./scripts/diffconfig.sh > configdiff;
-	cp $(TOPDIR)/$(OPENWRTDOR)/configdiff $(TOPDIR)/$(OPENWRTDOR)/.config;
-	$(MAKE) -C $(TOPDIR)/$(OPENWRTDOR) defconfig;
-	$(MAKE) -C $(TOPDIR)/$(OPENWRTDOR) oldconfig;
+
 endef
 
 define pi_router/$(PKG_NAME)/afterbuild
